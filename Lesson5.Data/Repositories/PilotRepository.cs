@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Lesson5.Data.Repositories
 {
     public class PilotRepository
+        //בשכבה זו נבצע רק לוגיקה שקשורה למסד התנונים בלבד
     {
         private readonly DataContext _dataContext;
         public PilotRepository(DataContext dataContext)
@@ -39,7 +40,6 @@ namespace Lesson5.Data.Repositories
         }
         public void UpdatePilot(Pilot pilot)
         {
-            //var f = GetPilotById(pilot.Id);
             _dataContext.Update(pilot);
             _dataContext.SaveChanges();
         }

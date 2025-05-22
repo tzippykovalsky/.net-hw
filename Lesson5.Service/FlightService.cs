@@ -26,11 +26,9 @@ namespace Lesson5.Service
 
         public void AddFlight(Flight flight)
         {
-            // לוגיקה 1
             if (flight.Price <= 0)
                 throw new ArgumentException("מחיר הטיסה חייב להיות מספר חיובי.");
 
-            // לוגיקה 2
             if (string.IsNullOrWhiteSpace(flight.Destination))
                 throw new ArgumentException("יש להזין יעד לטיסה.");
 
@@ -43,7 +41,7 @@ namespace Lesson5.Service
             if (pilot == null)
                 throw new InvalidOperationException("טייס לא קיים במערכת.");
 
-            // לוגיקה 5: לא לאפשר טיסה כפולה באותו שער, יעד וטייס
+            // לא לאפשר טיסה כפולה באותו שער, יעד וטייס
             var existingFlights = _flightRepository.GetFlights();
             bool conflict = existingFlights.Any(f =>
                 f.Gate == flight.Gate &&

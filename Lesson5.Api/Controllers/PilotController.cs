@@ -1,39 +1,31 @@
 ﻿using Lesson5.Core.Entities;
 using Lesson5.Service;
 using Microsoft.AspNetCore.Mvc;
-//I want you to act as a c# developer
-//write this class controller
-//use the functions from Lesson5.Service project
-//and create a controller that will use the functions from the service
-//the functions will return ActionResult 
-//use try catch to handle exceptions
-
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Lesson5.Api.Controllers
 {
-    [Route("api/[controller]")]//הגדרת הניתוב לקונטרולרים בדף זה
+    [Route("api/[controller]")]
     [ApiController]
-    public class FlightController : ControllerBase
+    public class PilotController : ControllerBase
     {
-
-        private readonly FlightService _flightService;
-        public FlightController(FlightService flightService)
+        private readonly PilotService _pilotService;
+        public PilotController(PilotService pilotService)
         {
-           _flightService = flightService;
+            _pilotService = pilotService;
         }
 
-        // GET: api/<FlightController>
+        // GET: api/<PilotController>
         [HttpGet]
-        public ActionResult<List<Flight>> Get()
+        public ActionResult<List<Pilot>> Get()
         {
             try
             {
-                //call the service to get the flights
-                var flights = _flightService.GetFlights();
-                //return the flights
-                return Ok(flights);
+                //call the service to get the pilots
+                var pilots = _pilotService.GetPilots();
+                //return the pilots
+                return Ok(pilots);
             }
             catch (ArgumentNullException ex)
             {
@@ -44,7 +36,7 @@ namespace Lesson5.Api.Controllers
             {
                 //return an error message
                 return BadRequest(ex.Message);
-                
+
             }
             catch (Exception ex)
             {
@@ -64,16 +56,16 @@ namespace Lesson5.Api.Controllers
         //    return new string[] { "value1", "value2" };
         //}
 
-        // GET api/<FlightController>/5
+        // GET api/<PilotController>/5
         [HttpGet("{id}")]
-        public ActionResult<Flight?> Get(int id)
+        public ActionResult<Pilot?> Get(int id)
         {
-            //call the service to get the flight by id
+            //call the service to get the pilot by id
             try
             {
-                var flight = _flightService.GetFlightById(id);
-                //return the flight
-                return Ok(flight);
+                var pilot = _pilotService.GetPilotById(id);
+                //return the pilot
+                return Ok(pilot);
             }
             catch (ArgumentNullException ex)
             {
@@ -92,65 +84,64 @@ namespace Lesson5.Api.Controllers
             }
         }
 
-        // POST api/<FlightController>
+        // POST api/<PilotController>
         [HttpPost]
-        public void Post([FromBody] Flight value)
+        public IActionResult Post([FromBody] Pilot value)
         {
             try
             {
-                //call the service to add the flight
-                _flightService.AddFlight(value);
+                _pilotService.AddPilot(value);
+                return NoContent(); // 204 - Created with no content
             }
             catch (ArgumentNullException ex)
             {
-                //return an error message
-                BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                //return an error message
-                BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                //return an error message
-                BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
-        // PUT api/<FlightController>/5
+
+        // PUT api/<PilotController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Flight value)
+        public IActionResult Put(int id, [FromBody] Pilot value)
+            //TODO
+            //חייבים לשלוח בפורמט  של טייס גם במקרה שמעוניינת רק לשנות פריקט אחד
+            //לבדוק שכך באמת עושים
         {
             try
             {
-                _flightService.UpdateFlight(value);
+                _pilotService.UpdatePilot(value, id);
+                return NoContent(); // 204 - עדכון הצליח, אין תוכן להחזיר
             }
-            catch (ArgumentNullException ex)
+            catch (KeyNotFoundException ex)
             {
-                //return an error message
-                BadRequest(ex.Message);
+                return NotFound(ex.Message); // 404 אם לא נמצא טייס
             }
-            catch (ArgumentException ex)
+            catch (InvalidOperationException ex)
             {
-                //return an error message
-                BadRequest(ex.Message);
+                return BadRequest(ex.Message); // 400 אם יש בעיה בלוגיקה (כמו שינוי ת"ז)
             }
             catch (Exception ex)
             {
-                //return an error message
-                BadRequest(ex.Message);
+                return BadRequest(ex.Message); // 400 לשגיאות אחרות
             }
         }
 
-        // DELETE api/<FlightController>/5
+        // DELETE api/<PilotController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
             try
             {
-                //call the service to remove the flight
-                _flightService.RemoveFlight(id);
+                //call the service to remove the pilot
+                _pilotService.RemovePilot(id);
             }
             catch (ArgumentNullException ex)
             {

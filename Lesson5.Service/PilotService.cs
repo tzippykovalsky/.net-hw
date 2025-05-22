@@ -50,17 +50,30 @@ namespace Lesson5.Service
 
             _pilotRepository.RemovePilot(id);
         }
-        public void UpdatePilot(Pilot pilot)
+        public void UpdatePilot(Pilot pilot,int id)
         {
-            var existing = _pilotRepository.GetPilotById(pilot.Id);
+            var existing = GetPilotById(id);
             if (existing == null)
-                throw new KeyNotFoundException($"Cannot update non-existing pilot with ID {pilot.Id}");
+                throw new KeyNotFoundException($"Pilot with ID {pilot.Id} does not exist.");
 
-            // למשל: לא נאפשר שינוי של ת"ז
-            if (existing.IdentityNumber != pilot.IdentityNumber)
+            // לא לשנות ת"ז (identity number)
+            if (pilot.IdentityNumber != null && pilot.IdentityNumber != existing.IdentityNumber)
                 throw new InvalidOperationException("Cannot change pilot's identity number.");
 
-            _pilotRepository.UpdatePilot(pilot);
+            // עדכון שדות לפי מה שנשלח, רק אם לא null/ריק
+            if (!string.IsNullOrWhiteSpace(pilot.Name))
+                existing.Name = pilot.Name;
+
+            if (pilot.Age > 0)
+                existing.Age = pilot.Age;
+
+            if (!string.IsNullOrWhiteSpace(pilot.Email))
+                existing.Email = pilot.Email;
+
+            // כאן לא נגע ב-Flights כדי לא למחוק אותם במקרה שלא נשלחו
+
+            _pilotRepository.UpdatePilot(existing); // הרפוזיטורי שומר את השינויים
         }
+
     }
 }

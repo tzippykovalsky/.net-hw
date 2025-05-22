@@ -14,7 +14,7 @@ namespace Lesson5.Core.Entities
         public string IdentityNumber { get; set; }
         public string Email { get; set; }
        
-        public List<Flight> Flights { get; set; }
+        public List<Flight>? Flights { get; set; }
 
     }
 }
